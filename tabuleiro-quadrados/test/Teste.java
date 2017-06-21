@@ -1,5 +1,5 @@
 
-import tabuleiro.Tabuleiro;
+import tabuleiro.Jogo;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -15,16 +15,16 @@ public class Teste {
 
     public static void main(String[] args) {
         
-        Tabuleiro t = new Tabuleiro();
+        Jogo jogo = new Jogo();
         int data[][] = new int[][] {{4,5,7},{8,1,2},{3,6,-1}};
-        t.setData(data);
+        jogo.tabuleiroInicial.setMatriz(data);
         
         //t.embaralhar();
-        System.out.println(t);
+        System.out.println(jogo);
         
-        //t.aleatorio();
-        t.distanciaEmUmNivel();
+        jogo.aleatorio();
+        //jogo.distanciaEmUmNivel();
         
-        System.out.println(t);
+        System.out.println(jogo);
     }
 }
