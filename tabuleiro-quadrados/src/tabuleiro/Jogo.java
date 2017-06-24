@@ -1,7 +1,8 @@
 package tabuleiro;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.PriorityQueue;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -14,99 +15,75 @@ import java.util.Arrays;
  */
 public class Jogo {
 
-    /*
-    private int[][] data;
-    private static final int SIZE = 3;
-    private int posicaoVazia;
-    */
-    private int contadorSolucao;
+    public int contadorSolucao;
     public Tabuleiro tabuleiroInicial;
-    private ArrayList<Tabuleiro> listaDeVizitados;
+    public boolean matchFirst;
+
+    private HashMap<Tabuleiro, Integer> listaDeVizitados;
     private ArrayList<Tabuleiro> listaResultado;
+    private PriorityQueue<Tabuleiro> lista;
+
+    private PriorityQueue<Tabuleiro> listaOrigem;
+    private PriorityQueue<Tabuleiro> listaDestino;
+    private HashMap<Tabuleiro, Integer> listaDeVizitadosOrigem;
+    private HashMap<Tabuleiro, Integer> listaDeVizitadosDestino;
 
     /**
      * Inicializa o tabuleiro com a solução do problema.
      */
     public Jogo() {
 
-        /*
-        this.data = new int[SIZE][SIZE];
-
-        for (int i = 0; i < SIZE; i++) {
-
-            for (int j = 0; j < SIZE; j++) {
-
-                this.data[i][j] = i * SIZE + j + 1;
-            }
-        }
-
-        this.posicaoVazia = 8;
-        this.data[SIZE - 1][SIZE - 1] = -1;
-        */
-                
         this.contadorSolucao = 0;
         this.tabuleiroInicial = new Tabuleiro();
-        
+
     }
 
-    /*public void setData(int[][] data) {
-        this.data = data;
-    }*/
-
     /**
-     * Inicializa o contadorSolução que representa a quantidade de movimentos feitos até conseguir a solução.
-     * 
+     * Inicializa o contadorSolução que representa a quantidade de movimentos
+     * feitos até conseguir a solução.
+     *
      */
-    public void inicializarContadorSolucao(){
-        
+    
+    
+    public void inicializarContadorSolucao() {
+
         this.contadorSolucao = 0;
     }
-    
-    /**
-     * Calcula o peso da configuração atual dos quadrados no tabuleiro.
-     *
-     * @return Valor do peso.
-     */
-    /*
-    public int calcularPeso() {
 
+    protected static int calcularPeso(Tabuleiro tabuleiro) {
         int soma = 0;
+        int size = tabuleiro.getSize();
 
-        for (int i = 0; i < SIZE; i++) {
+        if (tabuleiro.alvoModificado) {
+            for (int i = 0; i < size; i++) {
 
-            for (int j = 0; j < SIZE; j++) {
+                for (int j = 0; j < size; j++) {
 
-                if (this.data[i][j] == -1) {
-                    continue;
+                    soma += Math.pow(tabuleiro.getAlvo().matriz[i][j] - tabuleiro.matriz[i][j], 2);
                 }
-                soma += Math.pow((i * SIZE + j + 1) - this.data[i][j], 2);
             }
+        } else {
+
+            for (int i = 0; i < size; i++) {
+
+                for (int j = 0; j < size; j++) {
+
+                    if (tabuleiro.matriz[i][j] == -1) {
+                        continue;
+                    }
+                    soma += Math.pow((i * size + j + 1) - tabuleiro.matriz[i][j], 2);
+                }
+            }
+
         }
 
         return soma;
     }
 
-    private int calcularPeso(int[][] dados) {
-        int soma = 0;
-
-        for (int i = 0; i < SIZE; i++) {
-
-            for (int j = 0; j < SIZE; j++) {
-
-                if (dados[i][j] == -1) {
-                    continue;
-                }
-                soma += Math.pow((i * SIZE + j + 1) - dados[i][j], 2);
-            }
-        }
-
-        return soma;
-    }*/
-
-    private int calcularPeso(Tabuleiro tabuleiro) {
+    /*protected static int calcularPeso(Tabuleiro tabuleiro) {
         int soma = 0;
         int size = tabuleiro.getSize();
-        
+
         for (int i = 0; i < size; i++) {
 
             for (int j = 0; j < size; j++) {
@@ -114,43 +91,61 @@ public class Jogo {
                 if (tabuleiro.matriz[i][j] == -1) {
                     continue;
                 }
-                soma += Math.pow((i * size + j + 1) - this.tabuleiroInicial.matriz[i][j], 2);
+                soma += Math.pow(tabuleiro.getAlvo().matriz[i][j] - tabuleiro.matriz[i][j], 2);
             }
         }
 
         return soma;
-    }
-    
-
+    }*/
     /**
      * Verifica se o tabuleiro está solucionado, se o peso é igual a zero.
      *
      * @return Verdadeiro se o peso é igual ao zero, caso contrário, falso.
      */
-    public boolean estaResolvido(Tabuleiro tabuleiro) {
+    public boolean estaResolvido() {
 
-        return(this.calcularPeso(tabuleiro) == 0);
+        return (Jogo.estaResolvido(tabuleiroInicial));
+    }
+
+    private static boolean estaResolvido(Tabuleiro t) {
+
+        return (Jogo.calcularPeso(t) == 0);
     }
 
     public void embaralhar() {
 
-        ArrayList<Integer> fila = new ArrayList<>();
-        int size = tabuleiroInicial.getSize();
-        for (int i = 1; i < size * size; i++) {
-            fila.add(i);
+        int numPassos = (int) (Math.random() * 20 + 10);
+        //System.out.println(numPassos);
+        while (numPassos > 0) {
+
+            int[] possibilidades = this.possiveisMovimentos(tabuleiroInicial.getPosVazia());
+            int casa = possibilidades[(int) (Math.random() * possibilidades.length)];
+            this.troca(casa);
+            numPassos--;
         }
+    }
 
-        fila.add(-1);
+    public void embaralhar(int numPassos) {
 
-        int count = 0;
-        while (!fila.isEmpty()) {
+        while (numPassos > 0) {
 
-            this.tabuleiroInicial.matriz[count / size][count % size] = fila.remove((int) (Math.random() * (fila.size())));
-            if (this.tabuleiroInicial.matriz[count / size][count % size] == -1) {
-                this.tabuleiroInicial.setPosVazia(count);
-            }
-            count++;
+            int[] possibilidades = this.possiveisMovimentos(tabuleiroInicial.getPosVazia());
+            int casa = possibilidades[(int) (Math.random() * possibilidades.length)];
+            this.troca(casa);
+            numPassos--;
         }
+    }
+
+    private void troca(int posicao) {
+
+        Jogo.troca(tabuleiroInicial, posicao);
+    }
+
+    private static void troca(Tabuleiro t, int posicao) {
+
+        t.matriz[t.getPosVazia() / t.getSize()][t.getPosVazia() % t.getSize()] = t.matriz[posicao / t.getSize()][posicao % t.getSize()];
+        t.matriz[posicao / t.getSize()][posicao % t.getSize()] = -1;
+        t.setPosVazia(posicao);
     }
 
     /**
@@ -159,122 +154,272 @@ public class Jogo {
      */
     public void aleatorio() {
 
-        int posicao, size;
+        int posicao;
         this.contadorSolucao = 0;
-
-        size = this.tabuleiroInicial.getSize();
+        this.listaResultado = new ArrayList<>();
+        listaResultado.add(tabuleiroInicial);
         
         while (!this.estaResolvido(this.tabuleiroInicial)) {
 
             int[] lista = this.possiveisMovimentos(this.tabuleiroInicial.getPosVazia());
             posicao = lista[(int) (Math.random() * (lista.length))];
-            this.tabuleiroInicial.matriz[this.tabuleiroInicial.getPosVazia() / size][this.tabuleiroInicial.getPosVazia() % size] = this.tabuleiroInicial.matriz[posicao / size][posicao % size];
-            this.tabuleiroInicial.matriz[posicao / size][posicao % size] = -1;
-            this.tabuleiroInicial.setPosVazia(posicao);
-
+            this.troca(posicao);
+            listaResultado.add(tabuleiroInicial);
             this.contadorSolucao++;
         }
+        
     }
-    
-    /*
-    public void heuristicaEmUmNivel(){
+
+    public void heuristicaEmUmNivel() {
+
+        listaResultado = new ArrayList<>();
+        listaDeVizitados = new HashMap<>();
+        lista = new PriorityQueue<>();
+
+        /*Tabuleiro t = distanciaUmNivel(tabuleiroInicial, 0);
+        listaResultado.add(0, t);
         
-        int lista[] = this.possiveisMovimentos(this.posicaoVazia);
-        
-        int posicaoNova;
-        int dados[][];
-        int pesos[] = new int[lista.length];
-        int posicaoAntiga[] = new int[lista.length];
-        
-        for (int i = 0; i < lista.length; i++) {
-                
-                dados = this.copiarDados();
-                posicaoAntiga[i] = this.posicaoVazia;
-                posicaoNova = lista[i];
-                dados[posicaoAntiga[i] / SIZE][posicaoAntiga[i] % SIZE] = dados[posicaoNova / SIZE][posicaoNova % SIZE];
-                dados[posicaoNova / SIZE][posicaoNova % SIZE] = -1;
-                posicaoAntiga[i] = posicaoNova;
-                
-                pesos[i] = this.calcularPeso(dados);
-                
+        this.tabuleiroInicial = listaResultado.get(listaResultado.size() - 1);*/
+        this.tabuleiroInicial.setNumMovimento(0);
+        lista.add(this.tabuleiroInicial);
+        this.tabuleiroInicial = distanciaUmNivel();
+
+        //Coloca o caminho certo na lista
+        Tabuleiro t = this.tabuleiroInicial;
+        while (t != null) {
+            listaResultado.add(0, t);
+            t = t.getAntecessor();
         }
 
-        Arrays.sort(pesos);
-        
-        heuristicaEmUmNivel();
-        
     }
-    
-    public void distanciaEmUmNivel() {
 
+    private Tabuleiro distanciaUmNivel() {
+
+        Tabuleiro t = null;
+        int numMovimento = 0;
         this.contadorSolucao = 0;
 
-        int posicaoNova; 
-        int[] posicaoAntiga;
-        int[][] dados;
-        int[] movimentoAnterior;
-        
-        int[] lista;
-        int[] pesos;
-        int[] posicoes;
-        
-        int verificaPos, verificaNum, numeroAtual;
-        verificaPos = -1;
-        verificaNum = -2;
-        
-        while (!this.estaResolvido()) {
+        while (!lista.isEmpty()) {
 
-            lista = this.possiveisMovimentos(this.posicaoVazia);
-            pesos = new int[lista.length];
-            posicoes = new int[lista.length];
-            posicaoAntiga = new int[lista.length];
-            
-            for (int i = 0; i < pesos.length; i++) {
-                
-                dados = this.copiarDados();
-                posicaoAntiga[i] = this.posicaoVazia;
-                posicaoNova = lista[i];
-                numeroAtual = dados[posicaoAntiga[i] / SIZE][posicaoAntiga[i] % SIZE] = dados[posicaoNova / SIZE][posicaoNova % SIZE];
-                dados[posicaoNova / SIZE][posicaoNova % SIZE] = -1;
-                posicaoAntiga[i] = posicaoNova;
-                
-                posicoes[i] = posicaoNova;
-                //Verifica ciclo
-                if( (this.posicaoVazia == verificaPos) && (numeroAtual == verificaNum) ){
-                    pesos[i] = Integer.MAX_VALUE;
-                }
-                else pesos[i] = this.calcularPeso(dados);
-                
+            t = lista.poll();
+
+            //System.out.println(t);
+            listaDeVizitados.put(t, numMovimento);
+
+            if (estaResolvido(t)) {
+                return t;
             }
-            
-            int menorPeso = Integer.MAX_VALUE - 1;
-            int pos = 0;
-            for(int i = 0; i < pesos.length; i++){
-                if (pesos[i] < menorPeso) {
-                    
-                    menorPeso = pesos[i];
-                    pos = posicoes[i];
+
+            numMovimento++;
+            int[] possiveis = possiveisMovimentos(t.getPosVazia());
+            for (Integer e : possiveis) {
+
+                Tabuleiro novo = t.clone();
+                novo.setNumMovimento(numMovimento);
+                novo.setAntecessor(t);
+                troca(novo, e);
+                if (listaDeVizitados.containsKey(novo)) {
+                    continue;
                 }
+                lista.add(novo);
             }
-            
-            //Demarca verificações
-            verificaPos = pos;
-            verificaNum = this.data[pos / SIZE][pos % SIZE];
-            
-            //Aplica o movimento definitivo
-            this.data[this.posicaoVazia / SIZE][this.posicaoVazia % SIZE] = this.data[pos / SIZE][pos % SIZE];
-            this.data[pos / SIZE][pos % SIZE] = -1;
-            this.posicaoVazia = pos;
-            
-            System.out.println(this);
+
             
             this.contadorSolucao++;
-            
         }
-        
-    }
-    */
 
+        return t;
+    }
+
+    ////////////////////////////////////
+    // HEURISTICA PESSOAL
+    // A* COM MENOR DISTANCIA BIDIRECIONAL
+    public void heuristicaPessoal() {
+
+        listaOrigem = new PriorityQueue<>();
+        listaDestino = new PriorityQueue<>();
+        listaDeVizitadosOrigem = new HashMap<>();
+        listaDeVizitadosDestino = new HashMap<>();
+        listaResultado = new ArrayList<>();
+
+        tabuleiroInicial.alvoModificado = true;
+
+        Tabuleiro resultado = new Tabuleiro();
+
+        listaOrigem.add(this.tabuleiroInicial);
+        listaDestino.add(resultado);
+
+        tabuleiroInicial.alvoModificado = true;
+        resultado.alvoModificado = true;
+        Tabuleiro resposta = distanciaAEstrelaBidirecional();
+        tabuleiroInicial.alvoModificado = false;
+        resultado.alvoModificado = false;
+        
+        
+        //System.out.println(resposta);
+
+        Tabuleiro t = resposta;
+        if (matchFirst) {
+
+            while (t != null) {
+
+                listaResultado.add(0, t);
+                t = t.getAntecessor();
+            }
+
+            t = resposta.getAlvo();
+            while (t.getAntecessor() != null) {
+                listaResultado.add(t.getAntecessor());
+                t = t.getAntecessor();
+            }
+        }
+        else{
+            
+            while (t != null) {
+
+                listaResultado.add(t);
+                t = t.getAntecessor();
+            }
+            
+            t = resposta.getAlvo();
+            while (t.getAntecessor() != null) {
+                listaResultado.add(0,t.getAntecessor());
+                t = t.getAntecessor();
+            }
+        }
+
+        
+        tabuleiroInicial = listaResultado.get(listaResultado.size()-1);
+        tabuleiroInicial.alvoModificado = false;
+        
+        tabuleiroInicial.numMovimento = resposta.numMovimento;
+        /*this.tabuleiroInicial*/
+    }
+
+    private Tabuleiro distanciaAEstrelaBidirecional() {
+
+        Tabuleiro tOrigem;
+        Tabuleiro tDestino;
+        int[] possiveis;
+        int numOrigem = 0, numDestino = 0;
+        int count = -1;
+
+        tOrigem = listaOrigem.poll();
+        listaDeVizitadosOrigem.put(tOrigem, numOrigem);
+
+        tDestino = listaDestino.poll();
+        listaDeVizitadosDestino.put(tDestino, numDestino);
+
+        tOrigem.setAlvo(tDestino);
+        tDestino.setAlvo(tOrigem);
+        
+        this.contadorSolucao = 0;
+
+        while (tOrigem != null && tDestino != null) {
+
+            /*tOrigem.setAlvo(tDestino);
+            tDestino.setAlvo(tOrigem);*/
+            if (estaResolvido(tOrigem)) {
+
+                matchFirst = true;
+                //System.out.println(tOrigem);
+                //System.out.println(tOrigem.getAlvo());
+                return tOrigem;
+            } else if (estaResolvido(tDestino)) {
+
+                matchFirst = false;
+                //System.out.println(tDestino);
+                //System.out.println(tDestino.getAlvo());
+                return tDestino;
+            }
+
+            count++;
+            if (count % 2 == 0) {
+                possiveis = possiveisMovimentos(tDestino.posVazia);
+                numDestino++;
+                for (Integer e : possiveis) {
+
+                    Tabuleiro novo = tDestino.clone();
+                    novo.setNumMovimento(numDestino);
+                    novo.setAntecessor(tDestino);
+                    troca(novo, e);
+                    if (listaDeVizitadosDestino.containsKey(novo)) {
+                        continue;
+                    }
+                    listaDestino.add(novo);
+                }
+
+                tDestino = listaDestino.poll();
+                listaDeVizitadosDestino.put(tDestino, numDestino);
+            } else {
+                possiveis = possiveisMovimentos(tOrigem.posVazia);
+                numOrigem++;
+                for (Integer e : possiveis) {
+
+                    Tabuleiro novo = tOrigem.clone();
+                    novo.setNumMovimento(numOrigem);
+                    novo.setAntecessor(tOrigem);
+                    troca(novo, e);
+                    if (listaDeVizitadosOrigem.containsKey(novo)) {
+                        continue;
+                    }
+                    listaOrigem.add(novo);
+                }
+
+                tOrigem = listaOrigem.poll();
+                listaDeVizitadosOrigem.put(tOrigem, numOrigem);
+
+            }
+            
+            this.contadorSolucao++;
+
+        }
+
+        return tOrigem;
+    }
+
+    /*private Tabuleiro distanciaUmNivel(Tabuleiro t, int numMovimentos) {
+
+        System.gc();
+        System.out.println(t);
+        listaDeVizitados.add(t);
+
+        if (Jogo.estaResolvido(t)) {
+            return t;
+        }
+
+        //Calculando os possíveis estados
+         int[] possiveis = this.possiveisMovimentos(t.getPosVazia());
+         for (Integer i : possiveis) {
+
+            Tabuleiro n = t.clone();
+            Jogo.troca(n, i);
+            n.setNumMovimento(numMovimentos);
+            lista.add(n);
+        }
+        /**
+         * Corrigir, tem que escolher o menor custo, revisar
+         
+        Tabuleiro escolha = null;
+
+        while (escolha == null) {
+            
+            escolha = lista.poll();
+            if (escolha != null && !listaDeVizitados.contains(escolha)) {
+                
+                Tabuleiro result = distanciaUmNivel(escolha, numMovimentos + 1);
+                if (result != null) {
+
+                    listaResultado.add(0,result);
+                    return t;
+                }
+            }
+            else escolha = null;
+
+        }
+
+        return null;
+    }*/
     /**
      * Posições movimentos em um tabuleiro 3x3
      *
@@ -322,7 +467,7 @@ public class Jogo {
 
                 return new int[]{5, 7};
         }
-        
+
     }
 
     @Override
@@ -349,7 +494,7 @@ public class Jogo {
     }
 
     private int[][] copiarDados() {
-        
+
         int size = this.tabuleiroInicial.getSize();
         int[][] dados = new int[size][size];
 
@@ -364,4 +509,9 @@ public class Jogo {
 
         return dados;
     }
+
+    public ArrayList<Tabuleiro> getListaResultado() {
+        return listaResultado;
+    }
+
 }
