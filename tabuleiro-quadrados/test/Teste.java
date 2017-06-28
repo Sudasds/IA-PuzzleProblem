@@ -28,11 +28,12 @@ public class Teste {
         //{{2,6,3},{1,8,4},{7,-1,5}}
         //jogo.aleatorio();
         //jogo.heuristicaEmUmNivel();
-        jogo.heuristicaPessoal();
+        jogo.heuristicaEmDoisNiveis();
+        //jogo.heuristicaPessoal();
         System.out.println("##########################");
         System.out.println("Números de movimentos: " + jogo.contadorSolucao);
         System.out.println("##########################");
-        //System.out.println(jogo);
+        System.out.println(jogo);
         for(Tabuleiro t: jogo.getListaResultado()){
             System.out.println(t);
         }

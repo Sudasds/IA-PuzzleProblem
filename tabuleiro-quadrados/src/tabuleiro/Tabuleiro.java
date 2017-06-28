@@ -7,7 +7,7 @@ package tabuleiro;
 
 /**
  *
- * @author bruno
+ * @author Bruno Santos de Lima
  */
 public class Tabuleiro implements Comparable<Tabuleiro>{
     
@@ -18,6 +18,8 @@ public class Tabuleiro implements Comparable<Tabuleiro>{
     protected Tabuleiro antecessor;
     protected Tabuleiro alvo;
     protected boolean alvoModificado;
+    protected Tabuleiro nivel2;
+    protected boolean alvoNivel2;
     
     public Tabuleiro(){
         
@@ -36,6 +38,9 @@ public class Tabuleiro implements Comparable<Tabuleiro>{
         this.antecessor = null;
         this.alvo = null;
         this.alvoModificado = false;
+        this.nivel2 = null;
+        this.alvoNivel2 = false;
+        
     }
 
     public Tabuleiro getAlvo() {
@@ -54,10 +59,6 @@ public class Tabuleiro implements Comparable<Tabuleiro>{
         this.alvoModificado = alvoModificado;
     }
     
-   
-    
-    
-
     public int[][] getMatriz() {
         return matriz;
     }
@@ -90,8 +91,6 @@ public class Tabuleiro implements Comparable<Tabuleiro>{
         this.numMovimento = numMovimento;
     }
     
-    
-
     @Override
     public int compareTo(Tabuleiro o) {
         
@@ -154,6 +153,7 @@ public class Tabuleiro implements Comparable<Tabuleiro>{
                 
                 if (this.matriz[i][j] != o.matriz[i][j]) return false;
             }
+            
         }
         
         return true;
@@ -175,6 +175,7 @@ public class Tabuleiro implements Comparable<Tabuleiro>{
         }
         
         return soma;
+        
     }
 
     public Tabuleiro getAntecessor() {
@@ -184,9 +185,5 @@ public class Tabuleiro implements Comparable<Tabuleiro>{
     public void setAntecessor(Tabuleiro antecessor) {
         this.antecessor = antecessor;
     }
-    
-    
-    
-    
-    
+       
 }

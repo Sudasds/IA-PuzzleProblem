@@ -54,49 +54,65 @@ public class Jogo {
         int soma = 0;
         int size = tabuleiro.getSize();
 
-        if (tabuleiro.alvoModificado) {
+        if(tabuleiro.alvoNivel2){
+
+            int somaTabNivel1 = 0;
+            int somaTabNivel2 = 0;
+            
             for (int i = 0; i < size; i++) {
+                
+                    for (int j = 0; j < size; j++) {
 
-                for (int j = 0; j < size; j++) {
-
-                    soma += Math.pow(tabuleiro.getAlvo().matriz[i][j] - tabuleiro.matriz[i][j], 2);
-                }
-            }
-        } else {
-
-            for (int i = 0; i < size; i++) {
-
-                for (int j = 0; j < size; j++) {
-
-                    if (tabuleiro.matriz[i][j] == -1) {
-                        continue;
+                        if (tabuleiro.matriz[i][j] == -1) {
+                            continue;
+                        }
+                        somaTabNivel1 += Math.pow((i * size + j + 1) - tabuleiro.matriz[i][j], 2);
                     }
-                    soma += Math.pow((i * size + j + 1) - tabuleiro.matriz[i][j], 2);
-                }
             }
+            
+            for (int i = 0; i < size; i++) {
+                
+                    for (int j = 0; j < size; j++) {
 
+                        if (tabuleiro.nivel2.matriz[i][j] == -1) {
+                            continue;
+                        }
+                        somaTabNivel2 += Math.pow((i * size + j + 1) - tabuleiro.nivel2.matriz[i][j], 2);
+                    }
+            }
+            
+            soma = somaTabNivel1 + somaTabNivel2;
+            
+        }
+        else{
+            
+            if (tabuleiro.alvoModificado) {
+                for (int i = 0; i < size; i++) {
+                
+                    for (int j = 0; j < size; j++) {
+                    
+                        soma += Math.pow(tabuleiro.getAlvo().matriz[i][j] - tabuleiro.matriz[i][j], 2);
+                    }
+                }
+            } else {
+                
+                for (int i = 0; i < size; i++) {
+                
+                    for (int j = 0; j < size; j++) {
+
+                        if (tabuleiro.matriz[i][j] == -1) {
+                            continue;
+                        }
+                        soma += Math.pow((i * size + j + 1) - tabuleiro.matriz[i][j], 2);
+                    }
+                }
+            
+            }
         }
 
         return soma;
     }
 
-    /*protected static int calcularPeso(Tabuleiro tabuleiro) {
-        int soma = 0;
-        int size = tabuleiro.getSize();
-
-        for (int i = 0; i < size; i++) {
-
-            for (int j = 0; j < size; j++) {
-
-                if (tabuleiro.matriz[i][j] == -1) {
-                    continue;
-                }
-                soma += Math.pow(tabuleiro.getAlvo().matriz[i][j] - tabuleiro.matriz[i][j], 2);
-            }
-        }
-
-        return soma;
-    }*/
     /**
      * Verifica se o tabuleiro está solucionado, se o peso é igual a zero.
      *
@@ -170,19 +186,19 @@ public class Jogo {
         
     }
 
+    /**
+     * Realiza o processo de solução do jogo do tabuleiro utilizando a heuristica em um nível
+     */
     public void heuristicaEmUmNivel() {
 
+        //Inicializando
         listaResultado = new ArrayList<>();
         listaDeVizitados = new HashMap<>();
         lista = new PriorityQueue<>();
-
-        /*Tabuleiro t = distanciaUmNivel(tabuleiroInicial, 0);
-        listaResultado.add(0, t);
         
-        this.tabuleiroInicial = listaResultado.get(listaResultado.size() - 1);*/
         this.tabuleiroInicial.setNumMovimento(0);
-        lista.add(this.tabuleiroInicial);
-        this.tabuleiroInicial = distanciaUmNivel();
+        lista.add(this.tabuleiroInicial); //Lista contém apenas o inicio do jogo.
+        this.tabuleiroInicial = distanciaUmNivel(); //Tabuleiro recebe o resultado final
 
         //Coloca o caminho certo na lista
         Tabuleiro t = this.tabuleiroInicial;
@@ -193,6 +209,13 @@ public class Jogo {
 
     }
 
+     /**
+     * Metódo chamado dentro do método heuristicaEmUmNivel para realizar o processamento,
+     * caminhando para formar o conjunto solução.
+     * 
+     * @return Um objeto Tabuleiro no qual pode-se caminhar pelos seus antecessores e 
+     * forma o conjunto solução.
+     */
     private Tabuleiro distanciaUmNivel() {
 
         Tabuleiro t = null;
@@ -211,20 +234,26 @@ public class Jogo {
             }
 
             numMovimento++;
+            //Selecionando o conjunto de movimentos possiveis
             int[] possiveis = possiveisMovimentos(t.getPosVazia());
+            
             for (Integer e : possiveis) {
 
                 Tabuleiro novo = t.clone();
                 novo.setNumMovimento(numMovimento);
                 novo.setAntecessor(t);
+                
+                //Aplica o novo movimento no tabuleiro novo
                 troca(novo, e);
+                
+                //Caso o novo tabuleir já esteja na lista de vizitados ele é ignorado e é gerado um novo
                 if (listaDeVizitados.containsKey(novo)) {
                     continue;
                 }
-                lista.add(novo);
+                lista.add(novo); //Adicionando novo tabuleiro na lista de prioridade por peso
+                
             }
 
-            
             this.contadorSolucao++;
         }
 
@@ -232,8 +261,111 @@ public class Jogo {
     }
 
     ////////////////////////////////////
-    // HEURISTICA PESSOAL
-    // A* COM MENOR DISTANCIA BIDIRECIONAL
+    /**
+     * Realiza o processo de solução do jogo do tabuleiro utilizando a heuristica em dois níveis
+     */
+    public void heuristicaEmDoisNiveis(){
+        
+        //Inicializando
+        listaResultado = new ArrayList<>();
+        listaDeVizitados = new HashMap<>();
+        lista = new PriorityQueue<>();
+        
+        this.tabuleiroInicial.setNumMovimento(0);
+        lista.add(this.tabuleiroInicial); //Lista contém apenas o inicio do jogo.
+        this.tabuleiroInicial = distanciaDoisNiveis(); //Tabuleiro recebe o resultado final
+
+        //Coloca o caminho certo na lista
+        Tabuleiro t = this.tabuleiroInicial;
+        while (t != null) {
+            listaResultado.add(0, t);
+            t = t.getAntecessor();
+        }
+        
+    }
+    
+    /**
+     * Metódo chamado dentro do método heuristicaEmDoisNiveis para realizar o processamento,
+     * caminhando para formar o conjunto solução.
+     * 
+     * @return Um objeto Tabuleiro no qual pode-se caminhar pelos seus antecessores e 
+     * forma o conjunto solução.
+     */
+    public Tabuleiro distanciaDoisNiveis(){
+        
+        Tabuleiro t = null;
+        int numMovimento = 0;
+        this.contadorSolucao = 0;
+        PriorityQueue<Tabuleiro> listaNivel2 = new PriorityQueue<>();
+
+        while (!lista.isEmpty()) {
+
+            t = lista.poll();
+
+            //System.out.println(t);
+            listaDeVizitados.put(t, numMovimento);
+
+            if(estaResolvido(t)) return(t);
+
+            numMovimento++;
+            //Selecionando o conjunto de movimentos possiveis
+            int[] movimentosNivel1 = possiveisMovimentos(t.getPosVazia());
+            
+            for (Integer e : movimentosNivel1) {
+
+                Tabuleiro novo = t.clone();
+                novo.setNumMovimento(numMovimento);
+                novo.setAntecessor(t);
+                
+                //Aplica o novo movimento no tabuleiro novo
+                troca(novo, e);
+                
+                //Caso o novo tabuleiro não esteja na lista de vizitados realiza processamento
+                if (!listaDeVizitados.containsKey(novo)) {
+                    
+                    //Lista de movimentos para gerar o nivel 2
+                    int[] movimentosNivel2 = possiveisMovimentos(novo.getPosVazia());
+                    
+                    for(Integer b : movimentosNivel2){
+                        
+                        //Gerando o tabuleiro de nivel 2
+                        Tabuleiro novo2 = novo.clone();
+                        troca(novo2, b);
+                        
+                        //Adicionando todos os tabuleiros de nivel 2 em uma fila com os filhos nivel 2
+                        if(!listaDeVizitados.containsKey(novo2)){
+                            listaNivel2.add(novo2);
+                        }
+                    }
+                    if(!listaNivel2.isEmpty()){
+                        
+                        //Retorna o nivel 2 de menor peso
+                        Tabuleiro tAux = listaNivel2.poll();
+                        
+                        //Variaveis auxiliares para calculo de peso da heuristica 2
+                        novo.nivel2 = tAux;
+                        novo.alvoNivel2 = true;
+                    }
+                    lista.add(novo); //Adicionando novo tabuleiro na lista de prioridade por peso
+                    
+                    novo.nivel2 = null;
+                    novo.alvoNivel2 = false;
+                }
+                
+            }
+
+            this.contadorSolucao++;
+        }
+
+        return(t);
+        
+    }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Realiza o processo de solução do jogo do tabuleiro utilizando a heuristica pessoal.
+     * A heuristica pessoal consistem em A* com menor distancia bidirecional.
+     */
     public void heuristicaPessoal() {
 
         listaOrigem = new PriorityQueue<>();
@@ -377,49 +509,7 @@ public class Jogo {
 
         return tOrigem;
     }
-
-    /*private Tabuleiro distanciaUmNivel(Tabuleiro t, int numMovimentos) {
-
-        System.gc();
-        System.out.println(t);
-        listaDeVizitados.add(t);
-
-        if (Jogo.estaResolvido(t)) {
-            return t;
-        }
-
-        //Calculando os possíveis estados
-         int[] possiveis = this.possiveisMovimentos(t.getPosVazia());
-         for (Integer i : possiveis) {
-
-            Tabuleiro n = t.clone();
-            Jogo.troca(n, i);
-            n.setNumMovimento(numMovimentos);
-            lista.add(n);
-        }
-        /**
-         * Corrigir, tem que escolher o menor custo, revisar
-         
-        Tabuleiro escolha = null;
-
-        while (escolha == null) {
-            
-            escolha = lista.poll();
-            if (escolha != null && !listaDeVizitados.contains(escolha)) {
-                
-                Tabuleiro result = distanciaUmNivel(escolha, numMovimentos + 1);
-                if (result != null) {
-
-                    listaResultado.add(0,result);
-                    return t;
-                }
-            }
-            else escolha = null;
-
-        }
-
-        return null;
-    }*/
+  
     /**
      * Posições movimentos em um tabuleiro 3x3
      *
