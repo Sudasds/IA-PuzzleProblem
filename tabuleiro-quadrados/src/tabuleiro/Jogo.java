@@ -9,10 +9,7 @@ import java.util.PriorityQueue;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-/**
- *
- * @author leandroungari
- */
+
 public class Jogo {
 
     public int contadorSolucao;
@@ -43,8 +40,6 @@ public class Jogo {
      * feitos até conseguir a solução.
      *
      */
-    
-    
     public void inicializarContadorSolucao() {
 
         this.contadorSolucao = 0;
@@ -174,6 +169,7 @@ public class Jogo {
         this.contadorSolucao = 0;
         this.listaResultado = new ArrayList<>();
         listaResultado.add(tabuleiroInicial);
+        tabuleiroInicial = tabuleiroInicial.clone();
         
         while (!this.estaResolvido(this.tabuleiroInicial)) {
 
@@ -181,8 +177,10 @@ public class Jogo {
             posicao = lista[(int) (Math.random() * (lista.length))];
             this.troca(posicao);
             listaResultado.add(tabuleiroInicial);
+            tabuleiroInicial = tabuleiroInicial.clone();
             this.contadorSolucao++;
         }
+        
         
     }
 

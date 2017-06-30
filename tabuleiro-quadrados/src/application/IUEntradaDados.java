@@ -21,6 +21,8 @@ public class IUEntradaDados extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         
+        this.setTitle("Inserir tabuleiro");
+        
         this.matriz = new int[3][3];
         this.posVazia = 8;
     }
@@ -208,6 +210,8 @@ public class IUEntradaDados extends javax.swing.JDialog {
         this.matriz[2][1] = pos8;
         this.matriz[2][2] = pos9;
 
+        this.setVisible(false);
+        
     }//GEN-LAST:event_jToggleButton1ActionPerformed
 
     /**

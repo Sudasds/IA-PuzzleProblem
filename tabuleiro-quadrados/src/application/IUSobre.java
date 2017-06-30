@@ -17,6 +17,8 @@ public class IUSobre extends javax.swing.JDialog {
     public IUSobre(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        
+        this.setTitle("Sobre");
     }
 
     /**

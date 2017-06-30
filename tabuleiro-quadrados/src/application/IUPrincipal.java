@@ -6,6 +6,8 @@
 package application;
 
 import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -25,36 +27,44 @@ public class IUPrincipal extends javax.swing.JFrame {
     public int[][] matriz;
     public int posVazia;
     public int operacao;
-    
+
     /**
      * Creates new form Principal
      */
     public IUPrincipal() {
         initComponents();
-        
+
         //Interface padrão ao sistema.
-        try {    
+        try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             SwingUtilities.updateComponentTreeUI(this);
-            
-        } catch(Exception e){
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
+        //icone da aplicação
+        try {
+            Image icon = Toolkit.getDefaultToolkit().getImage("src/imagem/logo.jpg");
+            setIconImage(icon);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(rootPane, e, "ERRO", 0);
+        }
+
         //Centralizando a aplicação
         this.setLocationRelativeTo(null);
-        
+
         //Titulo da aplicação
         this.setTitle("Jogo dos quadrados");
-        
+
         //Inicializando variaveis
         tabuleiro = new Tabuleiro();
         jogo = new Jogo();
         this.operacao = -1;
-        
+
         this.radioAnicacaoON.setSelected(true);
         this.radioAnimacaoOFF.setSelected(false);
-        
+
     }
 
     /**
@@ -84,6 +94,8 @@ public class IUPrincipal extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         tfNumPassos = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
+        tfTentativas = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
@@ -138,8 +150,10 @@ public class IUPrincipal extends javax.swing.JFrame {
 
         btn9.setFont(new java.awt.Font("Arial Black", 1, 14)); // NOI18N
 
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel1.setText("Tabuleiro");
 
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel2.setText("Metódo de resolução:");
 
         lblMetodo.setText("Escolha um método");
@@ -169,6 +183,10 @@ public class IUPrincipal extends javax.swing.JFrame {
 
         jLabel3.setText("Movimentos realizados:");
 
+        tfTentativas.setEditable(false);
+
+        jLabel4.setText("Total de tentativas:");
+
         jMenu1.setText("Novo");
 
         jMenu4.setText("Inicializar tabuleiro");
@@ -192,6 +210,11 @@ public class IUPrincipal extends javax.swing.JFrame {
         jMenu1.add(jMenu4);
 
         jMenuItem7.setText("Sair");
+        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem7ActionPerformed(evt);
+            }
+        });
         jMenu1.add(jMenuItem7);
 
         jMenuBar1.add(jMenu1);
@@ -252,44 +275,49 @@ public class IUPrincipal extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addComponent(radioAnicacaoON)
+                    .addComponent(lblMetodo)
+                    .addComponent(radioAnimacaoOFF))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 83, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(radioAnicacaoON)
-                            .addComponent(lblMetodo)
-                            .addComponent(radioAnimacaoOFF))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 75, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btn7, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btn8, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btn9, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btn4, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btn5, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btn6, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel1)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(btn1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(btn2, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btn3, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18))
+                        .addComponent(btn7, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btn8, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btn9, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jButton1)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(tfNumPassos))))
+                        .addComponent(btn4, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btn5, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btn6, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel1)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btn1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btn2, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btn3, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(48, 48, 48))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(125, 125, 125)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButton1)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addComponent(jLabel4)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(tfTentativas, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabel3)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(tfNumPassos, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -299,9 +327,8 @@ public class IUPrincipal extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btn2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btn3, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btn3, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btn1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
@@ -312,9 +339,8 @@ public class IUPrincipal extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btn4, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(btn5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btn6, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(btn5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btn6, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(btn7, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -326,12 +352,16 @@ public class IUPrincipal extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(radioAnimacaoOFF)))
                 .addGap(18, 18, 18)
-                .addComponent(jLabel3)
-                .addGap(4, 4, 4)
-                .addComponent(tfNumPassos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(tfNumPassos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(tfTentativas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
-                .addGap(23, 23, 23))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         pack();
@@ -339,18 +369,18 @@ public class IUPrincipal extends javax.swing.JFrame {
 
     private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
         // TODO add your handling code here:
-        
+
         IUEntradaDados cad = new IUEntradaDados(this, true);
         cad.setLocationRelativeTo(this);
         cad.setVisible(true);
         this.matriz = cad.matriz;
         this.posVazia = cad.posVazia;
-        
-        Tabuleiro tabuleiroAux = new Tabuleiro();
-        tabuleiro.setMatriz(matriz);
-        tabuleiro.setPosVazia(posVazia);
-        
-        this.tabuleiro = tabuleiroAux;
+
+        tabuleiro.setMatriz(this.matriz);
+        tabuleiro.setPosVazia(this.posVazia);
+
+        cad.dispose();
+
         System.out.println(tabuleiro);
         btn1.setText(String.valueOf(tabuleiro.matriz[0][0]));
         btn2.setText(String.valueOf(tabuleiro.matriz[0][1]));
@@ -361,28 +391,54 @@ public class IUPrincipal extends javax.swing.JFrame {
         btn7.setText(String.valueOf(tabuleiro.matriz[2][0]));
         btn8.setText(String.valueOf(tabuleiro.matriz[2][1]));
         btn9.setText(String.valueOf(tabuleiro.matriz[2][2]));
-        
-        if(btn1.getText().equals("-1")) btn1.setText("");
-        else if(btn2.getText().equals("-1")) btn2.setText("");
-        else if(btn3.getText().equals("-1")) btn3.setText("");
-        else if(btn4.getText().equals("-1")) btn4.setText("");
-        else if(btn5.getText().equals("-1")) btn5.setText("");
-        else if(btn6.getText().equals("-1")) btn6.setText("");
-        else if(btn7.getText().equals("-1")) btn7.setText("");
-        else if(btn8.getText().equals("-1")) btn8.setText("");
-        else if(btn9.getText().equals("-1")) btn9.setText("");
+
+        if (btn1.getText().equals("-1")) {
+            btn1.setText("");
+        } else if (btn2.getText().equals("-1")) {
+            btn2.setText("");
+        } else if (btn3.getText().equals("-1")) {
+            btn3.setText("");
+        } else if (btn4.getText().equals("-1")) {
+            btn4.setText("");
+        } else if (btn5.getText().equals("-1")) {
+            btn5.setText("");
+        } else if (btn6.getText().equals("-1")) {
+            btn6.setText("");
+        } else if (btn7.getText().equals("-1")) {
+            btn7.setText("");
+        } else if (btn8.getText().equals("-1")) {
+            btn8.setText("");
+        } else if (btn9.getText().equals("-1")) {
+            btn9.setText("");
+        }
 
         cad.dispose();
-        
+
+        this.tfNumPassos.setText("");
+        this.tfTentativas.setText("");
+                
     }//GEN-LAST:event_jMenuItem9ActionPerformed
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
         // TODO add your handling code here:
-        
+
+        String entrada = JOptionPane.showInputDialog(this, "Insira o número de movimentos: ", "Quantidade movimentos para embaralhar", JOptionPane.QUESTION_MESSAGE);
+
+        int movimento;
+
+        if (entrada.equals("")) {
+            movimento = 10;
+        } else {
+
+            movimento = Integer.parseInt(entrada);
+        }
+
         Jogo jogo = new Jogo();
-        jogo.embaralhar();
+        jogo.embaralhar(movimento);
         this.tabuleiro = jogo.tabuleiroInicial;
-        System.out.println(tabuleiro);
+
+        //System.out.println(tabuleiro);
+
         btn1.setText(String.valueOf(tabuleiro.matriz[0][0]));
         btn2.setText(String.valueOf(tabuleiro.matriz[0][1]));
         btn3.setText(String.valueOf(tabuleiro.matriz[0][2]));
@@ -393,158 +449,213 @@ public class IUPrincipal extends javax.swing.JFrame {
         btn8.setText(String.valueOf(tabuleiro.matriz[2][1]));
         btn9.setText(String.valueOf(tabuleiro.matriz[2][2]));
 
-        if(btn1.getText().equals("-1")) btn1.setText("");
-        else if(btn2.getText().equals("-1")) btn2.setText("");
-        else if(btn3.getText().equals("-1")) btn3.setText("");
-        else if(btn4.getText().equals("-1")) btn4.setText("");
-        else if(btn5.getText().equals("-1")) btn5.setText("");
-        else if(btn6.getText().equals("-1")) btn6.setText("");
-        else if(btn7.getText().equals("-1")) btn7.setText("");
-        else if(btn8.getText().equals("-1")) btn8.setText("");
-        else if(btn9.getText().equals("-1")) btn9.setText("");
-        
+        if (btn1.getText().equals("-1")) {
+            btn1.setText("");
+        } else if (btn2.getText().equals("-1")) {
+            btn2.setText("");
+        } else if (btn3.getText().equals("-1")) {
+            btn3.setText("");
+        } else if (btn4.getText().equals("-1")) {
+            btn4.setText("");
+        } else if (btn5.getText().equals("-1")) {
+            btn5.setText("");
+        } else if (btn6.getText().equals("-1")) {
+            btn6.setText("");
+        } else if (btn7.getText().equals("-1")) {
+            btn7.setText("");
+        } else if (btn8.getText().equals("-1")) {
+            btn8.setText("");
+        } else if (btn9.getText().equals("-1")) {
+            btn9.setText("");
+        }
+
         this.tfNumPassos.setText("");
+        this.tfTentativas.setText("");
         
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // TODO add your handling code here:
-        
+
         this.lblMetodo.setText("Método Aleatório");
         this.operacao = 0;
-        
+
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        
-        if(this.operacao == 0){ //Aleatória
-            
+
+        this.radioAnicacaoON.setEnabled(false);
+        this.radioAnimacaoOFF.setEnabled(false);
+        this.jButton1.setEnabled(false);
+
+        Tabuleiro solucao = new Tabuleiro();
+        solucao.setMatriz(new int[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, -1}});
+
+        if (this.tabuleiro.equals(solucao)) {
+            this.tfNumPassos.setText("0");
+            this.radioAnicacaoON.setEnabled(true);
+            this.radioAnimacaoOFF.setEnabled(true);
+            this.jButton1.setEnabled(true);
+            return;
+        }
+
+        if (this.operacao == 0) { //Aleatória
+
             Jogo jogo = new Jogo();
+
             jogo.tabuleiroInicial = this.tabuleiro;
             jogo.aleatorio();
-            System.out.println(jogo.contadorSolucao);
-            if(this.radioAnicacaoON.isSelected() && !this.radioAnimacaoOFF.isSelected()){
-                
+
+            jogo.tabuleiroInicial = jogo.getListaResultado().get(jogo.getListaResultado().size() - 1);
+
+            //System.out.println(jogo.getListaResultado().size());
+
+            if (this.radioAnicacaoON.isSelected() && !this.radioAnimacaoOFF.isSelected()) {
+
                 Pintar pincel = new Pintar(jogo);
-                new Thread(pincel).start();
-            }
-            else if(!this.radioAnicacaoON.isSelected() && this.radioAnimacaoOFF.isSelected()){
-                
+                pincel.start();
+            } else if (!this.radioAnicacaoON.isSelected() && this.radioAnimacaoOFF.isSelected()) {
+
                 pintarSomenteResultadoFinal(jogo);
             }
 
-        }
-        else if(this.operacao == 1){ //Um nivel
-            
+            this.tfTentativas.setText((jogo.contadorSolucao) + "");
+        } else if (this.operacao == 1) { //Um nivel
+
             Jogo jogo = new Jogo();
             jogo.tabuleiroInicial = this.tabuleiro;
             jogo.heuristicaEmUmNivel();
-            System.out.println(jogo.contadorSolucao);
-            if(this.radioAnicacaoON.isSelected() && !this.radioAnimacaoOFF.isSelected()){
-                
+
+            jogo.tabuleiroInicial = jogo.getListaResultado().get(jogo.getListaResultado().size() - 1);
+            //System.out.println(jogo.getListaResultado().size());
+
+            if (this.radioAnicacaoON.isSelected() && !this.radioAnimacaoOFF.isSelected()) {
+
                 Pintar pincel = new Pintar(jogo);
-                new Thread(pincel).start();
-            }
-            else if(!this.radioAnicacaoON.isSelected() && this.radioAnimacaoOFF.isSelected()){
-                
+                pincel.start();
+            } else if (!this.radioAnicacaoON.isSelected() && this.radioAnimacaoOFF.isSelected()) {
+
                 pintarSomenteResultadoFinal(jogo);
             }
-            
-        }
-        else if(this.operacao == 2){ //Dois niveis
-            
+            this.tabuleiro = jogo.tabuleiroInicial;
+            this.tfTentativas.setText((jogo.contadorSolucao) + "");
+        } else if (this.operacao == 2) { //Dois niveis
+
             Jogo jogo = new Jogo();
             jogo.tabuleiroInicial = this.tabuleiro;
             jogo.heuristicaEmDoisNiveis();
-            System.out.println(jogo.contadorSolucao);
-            if(this.radioAnicacaoON.isSelected() && !this.radioAnimacaoOFF.isSelected()){
-                
+
+            jogo.tabuleiroInicial = jogo.getListaResultado().get(jogo.getListaResultado().size() - 1);
+            //System.out.println(jogo.getListaResultado().size());
+
+            if (this.radioAnicacaoON.isSelected() && !this.radioAnimacaoOFF.isSelected()) {
+
                 Pintar pincel = new Pintar(jogo);
-                new Thread(pincel).start();
-            }
-            else if(!this.radioAnicacaoON.isSelected() && this.radioAnimacaoOFF.isSelected()){
-                
+                pincel.start();
+              
+            } else if (!this.radioAnicacaoON.isSelected() && this.radioAnimacaoOFF.isSelected()) {
+
                 pintarSomenteResultadoFinal(jogo);
             }
+
+            this.tabuleiro = jogo.tabuleiroInicial;
+            this.tfTentativas.setText((jogo.contadorSolucao) + "");
             
-        }
-        else if(this.operacao == 3){ //Pessoal
-            
+        } else if (this.operacao == 3) { //Pessoal
+
             Jogo jogo = new Jogo();
             jogo.tabuleiroInicial = this.tabuleiro;
             jogo.heuristicaPessoal();
-            System.out.println(jogo.contadorSolucao);
-            if(this.radioAnicacaoON.isSelected() && !this.radioAnimacaoOFF.isSelected()){
-                
+
+            jogo.tabuleiroInicial = jogo.getListaResultado().get(jogo.getListaResultado().size() - 1);
+            //System.out.println(jogo.getListaResultado().size());
+
+            if (this.radioAnicacaoON.isSelected() && !this.radioAnimacaoOFF.isSelected()) {
+
                 Pintar pincel = new Pintar(jogo);
-                new Thread(pincel).start();
-            }
-            else if(!this.radioAnicacaoON.isSelected() && this.radioAnimacaoOFF.isSelected()){
-                
+                pincel.start();
+            } else if (!this.radioAnicacaoON.isSelected() && this.radioAnimacaoOFF.isSelected()) {
+
                 pintarSomenteResultadoFinal(jogo);
-                
+
             }
-            
-        }
-        else if(this.operacao == -1) { //Nenhuma operação selecionada
-            
+
+            this.tabuleiro = jogo.tabuleiroInicial;
+            this.tfTentativas.setText((jogo.contadorSolucao) + "");
+
+        } else if (this.operacao == -1) { //Nenhuma operação selecionada
+
             JOptionPane.showMessageDialog(null, "Nenhum método de resolução escolhido!");
         }
-                
+
+        //System.out.println(this.tabuleiro);
+
+        this.radioAnicacaoON.setEnabled(true);
+        this.radioAnimacaoOFF.setEnabled(true);
+        this.jButton1.setEnabled(true);
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         // TODO add your handling code here:
-        
+
         this.lblMetodo.setText("Método Heurística em um nível");
         this.operacao = 1;
-        
+
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         // TODO add your handling code here:
-        
+
         this.lblMetodo.setText("Método Heurística em dois níveis");
         this.operacao = 2;
-        
+
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         // TODO add your handling code here:
-        
+
         this.lblMetodo.setText("Método Heurística pessoal");
         this.operacao = 3;
-        
+
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
         // TODO add your handling code here:
-        
+
         IUSobre cad = new IUSobre(this, true);
         cad.setLocationRelativeTo(this);
         cad.setVisible(true);
-        
+
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     private void radioAnimacaoOFFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioAnimacaoOFFActionPerformed
         // TODO add your handling code here:
-        
+
         this.radioAnicacaoON.setSelected(false);
-        
+
     }//GEN-LAST:event_radioAnimacaoOFFActionPerformed
 
     private void radioAnicacaoONActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioAnicacaoONActionPerformed
         // TODO add your handling code here:
-        
+
         this.radioAnimacaoOFF.setSelected(false);
-        
+
     }//GEN-LAST:event_radioAnicacaoONActionPerformed
 
-    public void pintarSomenteResultadoFinal(Jogo jogo){
-        
+    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+        // TODO add your handling code here:
+
+        this.setVisible(false);
+        this.dispose();
+
+    }//GEN-LAST:event_jMenuItem7ActionPerformed
+
+    public void pintarSomenteResultadoFinal(Jogo jogo) {
+
         this.tabuleiro = jogo.tabuleiroInicial;
-        
+
         btn1.setText(String.valueOf(tabuleiro.matriz[0][0]));
         btn2.setText(String.valueOf(tabuleiro.matriz[0][1]));
         btn3.setText(String.valueOf(tabuleiro.matriz[0][2]));
@@ -555,19 +666,30 @@ public class IUPrincipal extends javax.swing.JFrame {
         btn8.setText(String.valueOf(tabuleiro.matriz[2][1]));
         btn9.setText(String.valueOf(tabuleiro.matriz[2][2]));
 
-        if(btn1.getText().equals("-1")) btn1.setText("");
-        else if(btn2.getText().equals("-1")) btn2.setText("");
-        else if(btn3.getText().equals("-1")) btn3.setText("");
-        else if(btn4.getText().equals("-1")) btn4.setText("");
-        else if(btn5.getText().equals("-1")) btn5.setText("");
-        else if(btn6.getText().equals("-1")) btn6.setText("");
-        else if(btn7.getText().equals("-1")) btn7.setText("");
-        else if(btn8.getText().equals("-1")) btn8.setText("");
-        else if(btn9.getText().equals("-1")) btn9.setText("");
-        
-        this.tfNumPassos.setText(jogo.contadorSolucao + "");
+        if (btn1.getText().equals("-1")) {
+            btn1.setText("");
+        } else if (btn2.getText().equals("-1")) {
+            btn2.setText("");
+        } else if (btn3.getText().equals("-1")) {
+            btn3.setText("");
+        } else if (btn4.getText().equals("-1")) {
+            btn4.setText("");
+        } else if (btn5.getText().equals("-1")) {
+            btn5.setText("");
+        } else if (btn6.getText().equals("-1")) {
+            btn6.setText("");
+        } else if (btn7.getText().equals("-1")) {
+            btn7.setText("");
+        } else if (btn8.getText().equals("-1")) {
+            btn8.setText("");
+        } else if (btn9.getText().equals("-1")) {
+            btn9.setText("");
+        }
+
+        this.tfNumPassos.setText(jogo.getListaResultado().size() - 1 + "");
+        this.tfTentativas.setText(jogo.contadorSolucao + "");
     }
-    
+
     /**
      * @param args the command line arguments
      */
@@ -602,22 +724,40 @@ public class IUPrincipal extends javax.swing.JFrame {
                 new IUPrincipal().setVisible(true);
             }
         });
-        
-        
+
     }
 
-    public class Pintar extends Thread{
-        
+    public class Pintar extends Thread {
+
         public Jogo jogo;
-        
-        public Pintar(Jogo jogo){
+
+        public Pintar(Jogo jogo) {
+            super();
             this.jogo = jogo;
         }
-        
+
         public void run() {
-            
-            int cont = 1;
-            for(Tabuleiro t : jogo.getListaResultado()){
+
+            int tempo = 1000;
+            int numMovimentos = jogo.getListaResultado().size();
+
+            if (numMovimentos > 15 && numMovimentos <= 30) {
+                tempo = 700;
+            } else if (numMovimentos > 31 && numMovimentos <= 100) {
+                tempo = 400;
+            } else if (numMovimentos > 101 && numMovimentos <= 1000) {
+                tempo = 50;
+            } else if (numMovimentos >= 1001 && numMovimentos <= 10000) {
+                tempo = 5;
+            } else if (numMovimentos >= 10001 && numMovimentos <= 100000) {
+                tempo = 1;
+            }
+            else if(numMovimentos >= 100001){
+                tempo = 0;
+            }     
+
+            int cont = 0;
+            for (Tabuleiro t : jogo.getListaResultado()) {
 
                 btn1.setText(String.valueOf(t.matriz[0][0]));
                 btn2.setText(String.valueOf(t.matriz[0][1]));
@@ -629,45 +769,40 @@ public class IUPrincipal extends javax.swing.JFrame {
                 btn8.setText(String.valueOf(t.matriz[2][1]));
                 btn9.setText(String.valueOf(t.matriz[2][2]));
 
-                if(btn1.getText().equals("-1")) btn1.setText("");
-                else if(btn2.getText().equals("-1")) btn2.setText("");
-                else if(btn3.getText().equals("-1")) btn3.setText("");
-                else if(btn4.getText().equals("-1")) btn4.setText("");
-                else if(btn5.getText().equals("-1")) btn5.setText("");
-                else if(btn6.getText().equals("-1")) btn6.setText("");
-                else if(btn7.getText().equals("-1")) btn7.setText("");
-                else if(btn8.getText().equals("-1")) btn8.setText("");
-                else if(btn9.getText().equals("-1")) btn9.setText("");
+                if (btn1.getText().equals("-1")) {
+                    btn1.setText("");
+                } else if (btn2.getText().equals("-1")) {
+                    btn2.setText("");
+                } else if (btn3.getText().equals("-1")) {
+                    btn3.setText("");
+                } else if (btn4.getText().equals("-1")) {
+                    btn4.setText("");
+                } else if (btn5.getText().equals("-1")) {
+                    btn5.setText("");
+                } else if (btn6.getText().equals("-1")) {
+                    btn6.setText("");
+                } else if (btn7.getText().equals("-1")) {
+                    btn7.setText("");
+                } else if (btn8.getText().equals("-1")) {
+                    btn8.setText("");
+                } else if (btn9.getText().equals("-1")) {
+                    btn9.setText("");
+                }
 
                 tfNumPassos.setText(cont + "");
                 cont++;
-                
-                int tempo = 1000;
-                
-                if (jogo.getListaResultado().size() > 15 && jogo.getListaResultado().size() <= 30) {
-                    tempo = 700;
-                }
-                else if (jogo.getListaResultado().size() <= 100) {
-                    tempo = 400;
-                }
-                else if (jogo.getListaResultado().size() <= 1000){
-                    
-                    tempo = 50;
-                }
-                else if (jogo.getListaResultado().size() <= 10000) {
-                    tempo = 5;
-                }
-                else tempo = 1;
-                
+  
+
                 try {
                     this.sleep(tempo);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(IUPrincipal.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }    
+            }
+
         }
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn1;
     private javax.swing.JButton btn2;
@@ -682,6 +817,7 @@ public class IUPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -700,8 +836,7 @@ public class IUPrincipal extends javax.swing.JFrame {
     private javax.swing.JRadioButton radioAnicacaoON;
     private javax.swing.JRadioButton radioAnimacaoOFF;
     private javax.swing.JTextField tfNumPassos;
+    private javax.swing.JTextField tfTentativas;
     // End of variables declaration//GEN-END:variables
 
-    
-    
 }

@@ -5,10 +5,6 @@
  */
 package tabuleiro;
 
-/**
- *
- * @author Bruno Santos de Lima
- */
 public class Tabuleiro implements Comparable<Tabuleiro>{
     
     public int[][] matriz;
